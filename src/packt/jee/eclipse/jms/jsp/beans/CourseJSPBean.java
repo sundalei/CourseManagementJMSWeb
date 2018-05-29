@@ -26,8 +26,8 @@ public class CourseJSPBean {
 		return course.getCredits();
 	}
 	
-	public void setCredits() {
-		course.setCredits(course.getCredits());
+	public void setCredits(int credits) {
+		course.setCredits(credits);
 	}
 	
 	public void addCourse(HttpServletRequest request) throws Exception {
