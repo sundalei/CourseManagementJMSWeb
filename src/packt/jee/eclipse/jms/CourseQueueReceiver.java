@@ -21,6 +21,8 @@ public class CourseQueueReceiver {
 	
 	private String receiverName;
 	
+	private CourseTopicPublisher topicPublisher;
+	
 	public CourseQueueReceiver(String name) throws Exception {
 		this.receiverName = name;
 		
@@ -31,6 +33,8 @@ public class CourseQueueReceiver {
 		session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 		queue = (Queue) initialContext.lookup("jms/courseManagementQueue");
 		
+		topicPublisher = new CourseTopicPublisher();
+		
 		QueueReceiver receiver = session.createReceiver(queue);
 		receiver.setMessageListener(new MessageListener() {
 			
@@ -39,6 +43,9 @@ public class CourseQueueReceiver {
 				try {
 					CourseDTO course = (CourseDTO) ((ObjectMessage) message).getObject();
 					System.out.println("Received addCourse message for course name - " + course.getName() + " in Receiver " + receiverName);
+					if(topicPublisher != null) {
+						topicPublisher.publishAddCourseMessage(course);
+					}
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
